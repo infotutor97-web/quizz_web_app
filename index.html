@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram Mini App - Quiz</title>
+    <title>Quiz App - Test Tizimi</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -25,68 +25,14 @@
         }
     </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
-        body {
-            font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
-        }
-
-        .glass {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-
-        .fade-in {
-            animation: fadeIn 0.5s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Xato kiritilganda silkash effekti */
-        .shake {
-            animation: shake 0.4s cubic-bezier(.36, .07, .19, .97) both;
-        }
-
-        @keyframes shake {
-
-            10%,
-            90% {
-                transform: translate3d(-1px, 0, 0);
-            }
-
-            20%,
-            80% {
-                transform: translate3d(2px, 0, 0);
-            }
-
-            30%,
-            50%,
-            70% {
-                transform: translate3d(-4px, 0, 0);
-            }
-
-            40%,
-            60% {
-                transform: translate3d(4px, 0, 0);
-            }
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .shake { animation: shake 0.4s cubic-bezier(.36, .07, .19, .97) both; }
+        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
     </style>
 </head>
 
@@ -97,8 +43,7 @@
         <div id="dashboard-view" class="space-y-6">
             <div class="flex items-center justify-between mb-8 fade-in">
                 <div class="flex items-center space-x-3">
-                    <div
-                        class="w-12 h-12 rounded-2xl bg-gradient-to-br from-accent to-purple flex items-center justify-center text-lg font-bold shadow-lg shadow-accent/20">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-accent to-purple flex items-center justify-center text-lg font-bold shadow-lg shadow-accent/20">
                         <span id="user-avatar">?</span>
                     </div>
                     <div>
@@ -106,37 +51,24 @@
                         <p class="text-slate-400 text-xs">O'z bilimingizni sinab ko'ring</p>
                     </div>
                 </div>
-                <button class="w-10 h-10 rounded-xl glass flex items-center justify-center text-slate-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                    </svg>
-                </button>
             </div>
 
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 fade-in">
                 <div class="glass p-4 rounded-2xl flex items-center space-x-3">
                     <div class="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center text-accent">
-                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                        </svg>
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
                     </div>
                     <div>
-                        <p class="text-slate-400 text-[10px] uppercase font-bold tracking-wider">Ball</p>
+                        <p class="text-slate-400 text-[10px] uppercase font-bold tracking-wider">Umumiy Ball</p>
                         <p id="user-score" class="text-lg font-black text-white">0</p>
                     </div>
                 </div>
                 <div class="glass p-4 rounded-2xl flex items-center space-x-3">
                     <div class="w-10 h-10 rounded-xl bg-success/10 flex items-center justify-center text-success">
-                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                        </svg>
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
                     </div>
                     <div>
-                        <p class="text-slate-400 text-[10px] uppercase font-bold tracking-wider">Testlar</p>
+                        <p class="text-slate-400 text-[10px] uppercase font-bold tracking-wider">Yechilgan</p>
                         <p id="user-tests" class="text-lg font-black text-white">0</p>
                     </div>
                 </div>
@@ -144,44 +76,28 @@
 
             <div class="space-y-4 fade-in">
                 <div class="flex justify-between items-center px-1">
-                    <h2 class="text-lg font-black tracking-tight">Mavjud testlar</h2>
-                    <span class="text-accent text-xs font-bold">Hammasi</span>
+                    <h2 class="text-lg font-black tracking-tight uppercase">Mavjud testlar</h2>
                 </div>
                 <div id="tests-list-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-4">
-                    <div
-                        class="glass p-8 rounded-[2rem] flex flex-col items-center justify-center space-y-4 opacity-50 border-dashed">
-                        <div class="w-12 h-12 rounded-full border-2 border-slate-700 border-t-accent animate-spin">
-                        </div>
-                        <p class="text-sm font-medium text-slate-400 uppercase tracking-widest">Yuklanmoqda</p>
                     </div>
-                </div>
             </div>
 
-            <button id="start-test-btn"
-                class="w-full bg-[#22C55E] hover:bg-[#1ea34d] text-white font-bold py-5 rounded-2xl text-lg shadow-[0_0_20px_rgba(34,197,94,0.3)] transition-all active:scale-95 flex items-center justify-center space-x-2">
-                <span>Testni boshlash</span>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                </svg>
-            </button>
+            <div class="space-y-4 pt-6">
+                <h2 class="text-lg font-black tracking-tight uppercase px-1">Top Foydalanuvchilar</h2>
+                <div class="leaderboard-container space-y-3">
+                    </div>
+            </div>
         </div>
 
         <div id="quiz-view" class="hidden flex flex-col h-screen max-h-screen">
             <div class="flex justify-between items-center mb-6">
                 <div class="flex items-center space-x-2">
-                    <div
-                        class="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400">
-                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     </div>
                     <span id="timer" class="text-xl font-mono font-black text-white">15:00</span>
                 </div>
-                <button id="stop-quiz-btn"
-                    class="bg-white/5 text-rose-400 px-5 py-2.5 rounded-2xl text-xs font-black uppercase glass">To'xtatish</button>
+                <button id="stop-quiz-btn" class="bg-white/5 text-rose-400 px-5 py-2.5 rounded-2xl text-xs font-black uppercase glass">To'xtatish</button>
             </div>
 
             <div id="pagination-container" class="glass rounded-2xl p-2 mb-6">
@@ -197,80 +113,54 @@
 
             <div class="flex justify-between items-center pt-4 border-t border-white/5 mt-auto pb-4">
                 <button id="prev-btn" class="p-4 rounded-2xl glass text-gray-400 disabled:opacity-30">
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                    </svg>
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
                 </button>
-                <button id="next-btn"
-                    class="bg-accent text-white px-8 py-4 rounded-2xl font-bold flex items-center space-x-2">
+                <button id="next-btn" class="bg-accent text-white px-8 py-4 rounded-2xl font-bold flex items-center space-x-2">
                     <span>Keyingisi</span>
-                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
                 </button>
             </div>
         </div>
 
-        <div id="password-modal"
-            class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-dark/95 backdrop-blur-xl hidden">
-            <div class="glass w-full max-w-sm rounded-[2.5rem] p-8 space-y-6 text-center border-accent/20 shadow-2xl">
+        <div id="password-modal" class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-dark/95 backdrop-blur-xl hidden">
+            <div class="glass w-full max-w-sm rounded-[2.5rem] p-8 space-y-6 text-center border-accent/20">
                 <div class="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center mx-auto text-accent">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
                 </div>
-                <div class="space-y-2">
-                    <h3 class="text-xl font-black uppercase tracking-tight">Kirish kodi</h3>
-                    <p class="text-slate-400 text-xs px-4">Testga kirish uchun maxsus 5 xonali parolni kiriting</p>
-                </div>
-
-                <div class="space-y-4">
-                    <input type="number" id="quiz-entry-password"
-                        oninput="if(this.value.length > 5) this.value = this.value.slice(0, 5);" placeholder="•••••"
-                        class="w-full bg-white/5 border-2 border-white/10 rounded-2xl py-4 text-center text-2xl font-black tracking-[0.5em] focus:border-accent outline-none transition-all">
-
-                    <p id="password-error" class="text-rose-500 text-[11px] font-bold uppercase hidden">
-                        ⚠️ KOD XATO! QAYTADAN KIRITING.
-                    </p>
-                </div>
-
-                <div class="flex space-x-3 pt-2">
-                    <button onclick="closePasswordModal()"
-                        class="flex-1 py-4 rounded-2xl glass text-[10px] font-bold uppercase tracking-widest">Yopish</button>
-                    <button id="confirm-password-btn"
-                        class="flex-[2] py-4 rounded-2xl bg-accent text-white font-bold uppercase text-[10px] tracking-widest shadow-lg shadow-accent/20">Tasdiqlash</button>
+                <h3 class="text-xl font-black uppercase">Kirish kodi</h3>
+                <input type="number" id="quiz-entry-password" oninput="if(this.value.length > 5) this.value = this.value.slice(0, 5);" placeholder="•••••" class="w-full bg-white/5 border-2 border-white/10 rounded-2xl py-4 text-center text-2xl font-black focus:border-accent outline-none">
+                <p id="password-error" class="text-rose-500 text-[11px] font-bold uppercase hidden">⚠️ KOD XATO!</p>
+                <div class="flex space-x-3">
+                    <button onclick="closePasswordModal()" class="flex-1 py-4 rounded-2xl glass font-bold uppercase text-[10px]">Yopish</button>
+                    <button id="confirm-password-btn" class="flex-[2] py-4 rounded-2xl bg-accent text-white font-bold uppercase text-[10px]">Tasdiqlash</button>
                 </div>
             </div>
         </div>
 
-        <div id="result-modal"
-            class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0B1120]/90 backdrop-blur-md hidden">
+        <div id="result-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-dark/95 backdrop-blur-md hidden">
+            <div class="glass w-full max-w-md rounded-[3rem] p-8 text-center space-y-6">
+                <h2 class="text-3xl font-black text-accent uppercase">Natija</h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-white/5 p-4 rounded-2xl"><p class="text-xs text-slate-400 uppercase">Ball</p><p id="modal-score" class="text-2xl font-black">0</p></div>
+                    <div class="bg-white/5 p-4 rounded-2xl"><p class="text-xs text-slate-400 uppercase">To'g'ri</p><p id="modal-correct" class="text-2xl font-black text-success">0</p></div>
+                    <div class="bg-white/5 p-4 rounded-2xl"><p class="text-xs text-slate-400 uppercase">Xato</p><p id="modal-wrong" class="text-2xl font-black text-rose-500">0</p></div>
+                    <div class="bg-white/5 p-4 rounded-2xl"><p class="text-xs text-slate-400 uppercase">Bo'sh</p><p id="modal-unanswered" class="text-2xl font-black text-slate-400">0</p></div>
+                </div>
+                <button id="close-modal-btn" class="w-full py-5 bg-accent rounded-2xl font-bold uppercase tracking-widest">Dashboardga qaytish</button>
+            </div>
         </div>
 
     </div>
 
+    <script type="module" src="firebase-config.js"></script>
+    
     <script type="module" src="app.js"></script>
+
     <script>
-        // UI Boshqaruvi
+        // Modalni yopish funksiyasi (Global)
         window.closePasswordModal = () => {
-            const modal = document.getElementById('password-modal');
-            const input = document.getElementById('quiz-entry-password');
-            const error = document.getElementById('password-error');
-
-            modal.classList.add('hidden');
-            input.value = '';
-            input.classList.remove('border-rose-500', 'shake');
-            error.classList.add('hidden');
+            document.getElementById('password-modal').classList.add('hidden');
         };
-
-        // Inputga yozganda xatolikni yo'qotish
-        document.getElementById('quiz-entry-password').addEventListener('input', function () {
-            this.classList.remove('border-rose-500', 'shake');
-            document.getElementById('password-error').classList.add('hidden');
-        });
     </script>
 </body>
-
 </html>
