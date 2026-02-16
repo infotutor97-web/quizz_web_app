@@ -1,3 +1,4 @@
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
     getFirestore, collection, getDocs, query, orderBy, doc,
@@ -8,12 +9,13 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_AUTH_DOMAIN",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_STORAGE_BUCKET",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyD9swW0q42RDlxK5sJO4VSdUJZJVgifyH8",
+  authDomain: "webbot-1db30.firebaseapp.com",
+  projectId: "webbot-1db30",
+  storageBucket: "webbot-1db30.firebasestorage.app",
+  messagingSenderId: "329422258981",
+  appId: "1:329422258981:web:38edc6733c853918d910cc",
+  measurementId: "G-8PNV2E2J64"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -100,4 +102,5 @@ window.firebaseDB = {
 
     // app.js va admin.js metodlari uchun zarur ulanishlar
     db, doc, getDoc, collection
+
 };
