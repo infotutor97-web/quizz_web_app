@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rich Admin Panel - Calm Night Quiz</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0B1120;
+            color: white;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .editor-container {
+            min-height: 100px;
+            padding: 1rem;
+            border-radius: 1rem;
+            cursor: text;
+            transition: all 0.2s;
+            outline: none;
+            overflow-y: auto;
+            max-height: 400px;
+        }
+
+        .editor-container:focus {
+            border-color: #A855F7;
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.2);
+        }
+
+        .editor-container img {
+            max-width: 180px;
+            height: auto;
+            display: inline-block;
+            vertical-align: middle;
+            border-radius: 12px;
+            margin: 8px;
+            border: 2px solid rgba(168, 85, 247, 0.4);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .editor-container img:hover {
+            transform: scale(1.02);
+            border-color: #A855F7;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        [contenteditable]:empty:before {
+            content: attr(placeholder);
+            color: #475569;
+            pointer-events: none;
+            display: block;
+        }
+    </style>
+</head>
+
+<body class="bg-[#0B1120] text-white">
+
+    <div id="loading-screen"
+        class="fixed inset-0 z-[100] bg-[#0B1120] flex flex-col items-center justify-center space-y-4">
+        <div class="w-16 h-16 rounded-full border-4 border-slate-800 border-t-[#A855F7] animate-spin"></div>
+        <p class="text-slate-400 font-medium uppercase tracking-widest text-xs">Xavfsiz Kirish...</p>
+    </div>
+
+    <div id="admin-app" class="hidden max-w-4xl mx-auto p-4 sm:px-6 lg:px-8 pb-20">
+        <header class="flex items-center justify-between py-8">
+            <div class="flex items-center space-x-3">
+                <div
+                    class="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#A855F7] to-[#3B82F6] flex items-center justify-center shadow-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-xl font-black tracking-tight uppercase">Super Admin Panel</h1>
+                    <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest">ID: 1550366584</p>
+                </div>
+            </div>
+            <a href="index.html"
+                class="glass px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition-colors">Yopish</a>
+        </header>
+
+        <div class="space-y-8">
+            <section class="glass p-8 rounded-[2.5rem] space-y-6 border border-white/5">
+                <h2 class="text-lg font-black text-white flex items-center space-x-2">
+                    <span class="w-2 h-6 bg-[#A855F7] rounded-full"></span>
+                    <span>Test Parametrlari</span>
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="space-y-2">
+                        <label class="text-[10px] uppercase font-black text-slate-500 ml-2">Mavzu nomi</label>
+                        <input type="text" id="q-title" placeholder="Masalan: Biologiya"
+                            class="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 focus:border-[#A855F7] outline-none transition-all">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] uppercase font-black text-slate-500 ml-2">Vaqt (Minutda)</label>
+                        <input type="number" id="q-duration" placeholder="30"
+                            class="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 focus:border-[#A855F7] outline-none transition-all">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] uppercase font-black text-slate-500 ml-2">Har bir savol bali</label>
+                        <input type="number" id="q-points" placeholder="5"
+                            class="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 focus:border-[#A855F7] outline-none transition-all">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] uppercase font-black text-[#A855F7] ml-2">Kirish Kodi (5
+                            xonali)</label>
+                        <input type="number" id="q-password"
+                            oninput="if(this.value.length > 5) this.value = this.value.slice(0, 5);" placeholder="12345"
+                            class="w-full bg-white/5 border border-[#A855F7]/30 rounded-2xl px-5 py-4 focus:border-[#A855F7] outline-none transition-all font-bold text-[#A855F7]">
+                    </div>
+                </div>
+            </section>
+
+            <div id="questions-container" class="space-y-8"></div>
+
+            <button onclick="addQuestion()"
+                class="w-full py-6 rounded-3xl border-2 border-dashed border-white/5 text-slate-500 hover:border-[#A855F7]/30 hover:text-[#A855F7] transition-all font-bold uppercase text-xs tracking-widest">
+                + Yangi Savol Blokini Qo'shish
+            </button>
+
+            <button id="submit-btn"
+                class="w-full bg-gradient-to-r from-[#A855F7] to-[#3B82F6] text-white font-black py-6 rounded-3xl shadow-xl active:scale-[0.98] transition-all tracking-widest uppercase">
+                Testni Bazaga Saqlash
+            </button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getStorage, ref, uploadString, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+
+        // FIREBASE CONFIGURATION (O'zingiznikini qo'ying)
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+        const tg = window.Telegram.WebApp;
+        const SUPER_ADMIN_ID = 1550366584;
+
+        window.addEventListener('load', () => {
+            const userId = tg.initDataUnsafe?.user?.id;
+            if (!userId || userId === SUPER_ADMIN_ID) {
+                setTimeout(() => {
+                    document.getElementById('loading-screen').classList.add('hidden');
+                    document.getElementById('admin-app').classList.remove('hidden');
+                    tg.expand();
+                }, 800);
+            } else {
+                document.getElementById('loading-screen').innerHTML = `<p class="text-rose-500 font-bold">Ruxsat berilmadi! ID: ${userId}</p>`;
+            }
+        });
+
+        let qCount = 0;
+        window.addQuestion = function () {
+            qCount++;
+            const container = document.getElementById('questions-container');
+            const html = `
+                <div id="q-block-${qCount}" class="glass p-8 rounded-[2.5rem] space-y-6 animate-fadeIn border-2 border-white/5 relative">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center space-x-2">
+                             <span class="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center text-[#A855F7] font-black text-xs">${qCount}</span>
+                             <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Savol Mazmuni</span>
+                        </div>
+                        <button onclick="this.closest('#q-block-${qCount}').remove()" class="text-slate-600 hover:text-rose-500 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="editor-container glass border border-white/5" 
+                         contenteditable="true" 
+                         placeholder="Savol matnini yozing... (Rasm uchun Ctrl+V)" 
+                         onpaste="handlePaste(event)"></div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        ${['A', 'B', 'C', 'D'].map((l, i) => `
+                            <div class="space-y-2 glass rounded-3xl p-5 border border-white/5 hover:border-white/10 transition-all">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center space-x-3">
+                                        <input type="radio" name="correct-${qCount}" value="${i}" class="w-5 h-5 accent-[#22C55E] cursor-pointer">
+                                        <span class="text-[10px] font-black text-slate-500 uppercase">${l} Varianti</span>
+                                    </div>
+                                    <button onclick="clearEditor(this)" class="text-[9px] text-slate-600 hover:text-white uppercase font-bold tracking-tighter">Tozalash</button>
+                                </div>
+                                <div class="editor-container glass min-h-[60px] text-sm" 
+                                     contenteditable="true" 
+                                     placeholder="${l} javob matni..." 
+                                     onpaste="handlePaste(event)"></div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', html);
+        }
+
+        window.clearEditor = function (btn) {
+            const editor = btn.closest('.glass').querySelector('.editor-container');
+            editor.innerHTML = '';
+        }
+
+        window.handlePaste = function (e) {
+            const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+            for (let item of items) {
+                if (item.kind === 'file' && item.type.startsWith('image/')) {
+                    e.preventDefault();
+                    const blob = item.getAsFile();
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        const img = document.createElement('img');
+                        img.src = event.target.result;
+                        const selection = window.getSelection();
+                        if (selection.rangeCount) {
+                            const range = selection.getRangeAt(0);
+                            range.insertNode(img);
+                            range.collapse(false);
+                            selection.removeAllRanges();
+                            selection.addRange(range);
+                        } else {
+                            e.target.appendChild(img);
+                        }
+                    };
+                    reader.readAsDataURL(blob);
+                }
+            }
+        };
+
+        async function uploadInlineImages(html) {
+            const div = document.createElement('div');
+            div.innerHTML = html;
+            const imgs = div.querySelectorAll('img');
+
+            for (let img of imgs) {
+                if (img.src.startsWith('data:image')) {
+                    const fileName = `inline/${Date.now()}_${Math.random().toString(36).substr(2, 9)}.png`;
+                    const fileRef = ref(storage, fileName);
+                    try {
+                        await uploadString(fileRef, img.src, 'data_url');
+                        const downloadURL = await getDownloadURL(fileRef);
+                        img.src = downloadURL;
+                    } catch (error) {
+                        console.error("Rasm yuklashda xatolik:", error);
+                    }
+                }
+            }
+            return div.innerHTML;
+        }
+
+        document.getElementById('submit-btn').onclick = async function () {
+            const btn = this;
+            const title = document.getElementById('q-title').value.trim();
+            const duration = parseInt(document.getElementById('q-duration').value);
+            const points = parseInt(document.getElementById('q-points').value) || 2;
+            const password = document.getElementById('q-password').value; // YANGI
+            const blocks = document.querySelectorAll('#questions-container > div');
+
+            if (!title || isNaN(duration) || password.length !== 5 || blocks.length === 0) {
+                return alert("Iltimos, test mavzusi, vaqti, 5 xonali kod va kamida bitta savolni to'ldiring!");
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = `YUKLANMOQDA...`;
+
+            try {
+                const questions = [];
+                for (let block of blocks) {
+                    const editors = block.querySelectorAll('.editor-container');
+                    const correct = block.querySelector('input[type="radio"]:checked')?.value;
+
+                    if (correct === undefined) {
+                        throw new Error(`Savol #${block.id.split('-')[2]} uchun to'g'ri javob tanlanmagan!`);
+                    }
+
+                    const qHtml = await uploadInlineImages(editors[0].innerHTML);
+                    const options = [];
+                    for (let i = 1; i <= 4; i++) {
+                        const optHtml = await uploadInlineImages(editors[i].innerHTML);
+                        options.push(optHtml);
+                    }
+
+                    questions.push({
+                        text: qHtml,
+                        options: options,
+                        correct: parseInt(correct)
+                    });
+                }
+
+                await addDoc(collection(db, "quizzes"), {
+                    title,
+                    duration,
+                    password, // BAZAGA SAQLASH
+                    pointsPerQuestion: points,
+                    questions,
+                    questionsCount: questions.length,
+                    createdAt: serverTimestamp(),
+                    createdBy: SUPER_ADMIN_ID
+                });
+
+                alert("Tabriklaymiz! Test muvaffaqiyatli saqlandi. Kod: " + password);
+                window.location.href = "index.html";
+
+            } catch (e) {
+                console.error(e);
+                alert("Xatolik yuz berdi: " + e.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "SAQLASH VA DASHBOARDGA QO'SHISH";
+            }
+        }
+
+        addQuestion();
+    </script>
+</body>
+
+</html>
