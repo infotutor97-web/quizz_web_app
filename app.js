@@ -50,47 +50,63 @@ const elements = {
  */
 async function initApp() {
     // Hodisalarni biriktirish
-    elements.prevBtn.addEventListener('click', () => navigate(-1));
-    elements.nextBtn.addEventListener('click', () => navigate(1));
-    elements.stopBtn.addEventListener('click', () => {
-        if (confirm("Testni to'xtatmoqchimisiz?")) switchView('dashboard');
-    });
-    elements.closeModalBtn.addEventListener('click', () => {
-        elements.resultModal.classList.add('hidden');
-        switchView('dashboard');
-    });
+    if (elements.prevBtn) elements.prevBtn.addEventListener('click', () => navigate(-1));
+    if (elements.nextBtn) elements.nextBtn.addEventListener('click', () => navigate(1));
+    
+    if (elements.stopBtn) {
+        elements.stopBtn.addEventListener('click', () => {
+            if (confirm("Testni to'xtatmoqchimisiz?")) switchView('dashboard');
+        });
+    }
 
-    // Ma'lumotlarni yuklash
-    await authUser();
-    await loadTests();
-    await loadLeaderboard();
+    if (elements.closeModalBtn) {
+        elements.closeModalBtn.addEventListener('click', () => {
+            elements.resultModal.classList.add('hidden');
+            switchView('dashboard');
+        });
+    }
+
+    // Ma'lumotlarni yuklash (Ketma-ketlik muhim)
+    try {
+        await authUser();
+        await loadTests();
+        await loadLeaderboard();
+    } catch (error) {
+        console.error("Inizializatsiya xatosi:", error);
+    }
 }
 
 /**
  * Foydalanuvchini autentifikatsiya qilish
  */
 async function authUser() {
-    const telegramUser = tg.initDataUnsafe.user;
-    if (!telegramUser) {
-        appState.user = { id: 12345, first_name: "Mehmon", score: 0, completedTests: 0 };
-    } else {
-        if (window.firebaseDB) {
-            let user = await window.firebaseDB.getUser(telegramUser.id);
-            if (!user) {
-                user = {
-                    id: telegramUser.id,
-                    first_name: telegramUser.first_name,
-                    username: telegramUser.username || '',
-                    score: 0,
-                    completedTests: 0,
-                    createdAt: new Date().toISOString()
-                };
-                await window.firebaseDB.saveUser(telegramUser.id, user);
-            }
-            appState.user = user;
+    const telegramUser = tg.initDataUnsafe?.user;
+    const userId = telegramUser?.id ? telegramUser.id.toString() : "1550366584"; // Test uchun sizning ID
+
+    if (window.firebaseDB) {
+        let user = await window.firebaseDB.getUser(userId);
+        
+        if (!user) {
+            user = {
+                id: userId,
+                first_name: telegramUser?.first_name || "Admin",
+                username: telegramUser?.username || '',
+                score: 0,
+                completedTests: 0,
+                role: userId === "1550366584" ? "admin" : "user",
+                createdAt: new Date().toISOString()
+            };
+            await window.firebaseDB.saveUser(userId, user);
+        }
+        appState.user = user;
+        updateUserUI();
+
+        // Agar foydalanuvchi admin bo'lsa va admin panel mavjud bo'lsa
+        if (user.role === 'admin' && window.location.pathname.includes('index.html')) {
+            console.log("Admin aniqlandi");
+            // Bu yerda admin tugmasini chiqarish yoki yo'naltirish mumkin
         }
     }
-    updateUserUI();
 }
 
 /**
@@ -98,8 +114,14 @@ async function authUser() {
  */
 async function loadLeaderboard() {
     if (!window.firebaseDB || !elements.leaderboardContainer) return;
+    
     try {
-        const leaderboardData = await window.firebaseDB.getLeaderboard();
+        // firebaseDB da getLeaderboard metodini qo'shib qo'yamiz yoki mavjudini chaqiramiz
+        const usersRef = window.firebaseDB.collection(window.firebaseDB.db, "users");
+        const q = window.firebaseDB.query(usersRef, window.firebaseDB.orderBy("score", "desc"), window.firebaseDB.limit(10));
+        const snap = await window.firebaseDB.getDocs(q);
+        
+        const leaderboardData = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         elements.leaderboardContainer.innerHTML = '';
 
         leaderboardData.forEach((item, index) => {
@@ -111,12 +133,12 @@ async function loadLeaderboard() {
                     <div class="flex items-center space-x-4">
                         <span class="${rankClass} text-base font-black w-5 text-center">${index + 1}</span>
                         <div class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-xs font-bold text-slate-300">
-                            ${item.name.charAt(0).toUpperCase()}
+                            ${(item.first_name || item.name || "U").charAt(0).toUpperCase()}
                         </div>
-                        <span class="font-bold text-sm ${isMe ? 'text-white' : 'text-slate-200'}">${item.name} ${isMe ? '(Siz)' : ''}</span>
+                        <span class="font-bold text-sm ${isMe ? 'text-white' : 'text-slate-200'}">${item.first_name || item.name} ${isMe ? '(Siz)' : ''}</span>
                     </div>
                     <div class="text-right">
-                        <span class="text-accent font-black text-sm uppercase tracking-tighter">${item.score.toLocaleString()}</span>
+                        <span class="text-accent font-black text-sm uppercase tracking-tighter">${(item.score || 0).toLocaleString()}</span>
                         <p class="text-[8px] text-slate-500 font-bold uppercase tracking-widest">Ball</p>
                     </div>
                 </div>
@@ -149,8 +171,10 @@ async function loadTests() {
                 testCard.querySelector('button').onclick = () => checkPasswordAndStart(test.id);
                 elements.testsListContainer.appendChild(testCard);
             });
+        } else {
+            elements.testsListContainer.innerHTML = '<p class="text-slate-500 text-center text-sm">Hozircha testlar mavjud emas.</p>';
         }
-    } catch (e) { console.error(e); }
+    } catch (e) { console.error("Load tests error:", e); }
 }
 
 /**
@@ -162,7 +186,7 @@ async function checkPasswordAndStart(testId) {
 
     try {
         const correctPass = await window.firebaseDB.getQuizPassword(testId);
-        if (userPass === correctPass) {
+        if (userPass.toString() === correctPass?.toString()) {
             startQuiz(testId);
         } else {
             alert("Kod noto'g'ri!");
@@ -177,8 +201,10 @@ async function startQuiz(testId) {
     try {
         const docRef = window.firebaseDB.doc(window.firebaseDB.db, "quizzes", testId);
         const docSnap = await window.firebaseDB.getDoc(docRef);
+        
+        if (!docSnap.exists()) return;
+        
         const quizData = docSnap.data();
-
         appState.questions = quizData.questions;
         appState.timeLeft = quizData.duration * 60;
         appState.currentQuestionIndex = 0;
@@ -188,23 +214,23 @@ async function startQuiz(testId) {
         renderQuestion();
         renderPagination();
         startTimer();
-    } catch (e) { console.error(e); }
+    } catch (e) { console.error("Start quiz error:", e); }
 }
 
 function renderQuestion() {
     const qIndex = appState.currentQuestionIndex;
     const question = appState.questions[qIndex];
 
-    elements.questionText.innerHTML = `${qIndex + 1}. ${question.text}`;
+    elements.questionText.innerHTML = `<span class="text-accent">Savol ${qIndex + 1}:</span><br>${question.text}`;
     elements.optionsContainer.innerHTML = '';
 
     question.options.forEach((option, idx) => {
         const isSelected = appState.userAnswers[qIndex] === idx;
         const btn = document.createElement('button');
-        btn.className = `option-btn glass p-4 rounded-2xl text-left flex items-center space-x-4 transition-all ${isSelected ? 'selected border-accent bg-accent/5' : ''}`;
+        btn.className = `option-btn glass p-4 rounded-2xl text-left flex items-center space-x-4 transition-all w-full border-2 ${isSelected ? 'border-accent bg-accent/10' : 'border-transparent'}`;
         btn.innerHTML = `
             <span class="w-8 h-8 rounded-lg bg-dark flex items-center justify-center text-accent font-bold">${String.fromCharCode(65 + idx)}</span>
-            <div class="option-text flex-1">${option}</div>
+            <div class="option-text flex-1 text-slate-200">${option}</div>
         `;
         btn.onclick = () => {
             appState.userAnswers[qIndex] = idx;
@@ -215,11 +241,12 @@ function renderQuestion() {
     });
 
     elements.prevBtn.disabled = qIndex === 0;
-    elements.nextBtn.querySelector('span').textContent =
+    elements.nextBtn.querySelector('span').textContent = 
         qIndex === appState.questions.length - 1 ? 'Tugatish' : 'Keyingisi';
 }
 
 function renderPagination() {
+    if (!elements.pagination) return;
     elements.pagination.innerHTML = '';
     appState.questions.forEach((_, idx) => {
         const isCurrent = appState.currentQuestionIndex === idx;
@@ -239,7 +266,11 @@ function startTimer() {
         const min = Math.floor(appState.timeLeft / 60);
         const sec = appState.timeLeft % 60;
         elements.timerDisplay.textContent = `${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
-        if (appState.timeLeft <= 0) finishQuiz();
+        
+        if (appState.timeLeft <= 0) {
+            clearInterval(appState.timer);
+            finishQuiz();
+        }
     }, 1000);
 }
 
@@ -251,11 +282,11 @@ async function finishQuiz() {
     });
 
     const totalQuestions = appState.questions.length;
-    const score = correct * 2;
+    const score = correct * 10; // Har bir to'g'ri javob uchun 10 ball
 
-    elements.modalScore.textContent = `${score}/${totalQuestions * 2}`;
+    elements.modalScore.textContent = `${score} ball`;
     elements.modalCorrect.textContent = correct;
-    elements.modalWrong.textContent = totalQuestions - correct - (totalQuestions - Object.keys(appState.userAnswers).length);
+    elements.modalWrong.textContent = totalQuestions - correct;
     elements.modalUnanswered.textContent = totalQuestions - Object.keys(appState.userAnswers).length;
 
     elements.resultModal.classList.remove('hidden');
@@ -280,20 +311,26 @@ function navigate(dir) {
         renderQuestion();
         renderPagination();
     } else if (next === appState.questions.length) {
-        finishQuiz();
+        if (confirm("Testni tugatmoqchimisiz?")) finishQuiz();
     }
 }
 
 function switchView(view) {
+    appState.currentView = view;
     views.dashboard.classList.toggle('hidden', view !== 'dashboard');
     views.quiz.classList.toggle('hidden', view !== 'quiz');
-    if (view === 'dashboard') clearInterval(appState.timer);
+    if (view === 'dashboard') {
+        clearInterval(appState.timer);
+        window.scrollTo(0, 0);
+    }
 }
 
 function updateUserUI() {
+    if (!appState.user) return;
     elements.userGreeting.textContent = `Salom, ${appState.user.first_name}!`;
-    elements.userScore.textContent = appState.user.score.toLocaleString();
-    elements.userTests.textContent = appState.user.completedTests;
+    elements.userScore.textContent = (appState.user.score || 0).toLocaleString();
+    elements.userTests.textContent = appState.user.completedTests || 0;
 }
 
-initApp();
+// Ilovani boshlash
+document.addEventListener('DOMContentLoaded', initApp);
